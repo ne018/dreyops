@@ -1,0 +1,53 @@
+# not autoscript
+
+# make sure the service already started
+
+$ mongo
+
+use admin
+
+# create root account
+
+db.createUser(
+  {
+    user: "dbRoot",
+    pwd: "root123",
+    roles: [ { role: "root", db: "admin" } ]
+  }
+)
+
+# create admin account
+
+db.createUser(
+  {
+    user: "dbAdmin",
+    pwd: "admin123",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+  }
+)
+
+exit
+
+# this is supposedly failed to login
+$ mongod --auth --port 27017
+
+# this is rightway to login via auth acc
+$ mongo --port 27017 -u "dbAdmin" --authenticationDatabase "admin" -p
+
+# create database user
+
+use test
+
+db.createUser(
+  {
+    user: "testUser",
+    pwd: "xyz123",
+    roles: [ { role: "readWrite", db: "test" } ]
+  }
+)
+
+$ mongo --port 27017 -u "pubmqttuser" --authenticationDatabase "pubchatdb" -p
+
+# sample usage for db in applications
+# mongodb://testUser:xyz123@localhost:27017/test
+

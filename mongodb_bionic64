@@ -1,0 +1,23 @@
+# mongo setup bionic64
+
+# update before we start
+sudo apt update -y
+
+# key before get the latest version for bionic
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 4B7C549A058F8B6B
+echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb.list
+
+# fetch updated version for mongod
+sudo apt update -y
+sudo apt install mongodb-org -y
+
+# services for mongod
+sudo systemctl enable mongod
+sudo systemctl start mongod
+sudo systemctl stop mongod
+sudo systemctl restart mongod
+
+
+# checking version
+mongo --version
+
