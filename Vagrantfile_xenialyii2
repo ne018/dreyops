@@ -83,8 +83,8 @@ Vagrant.configure("2") do |config|
     
     # create mysql user
     mysql -u root -p$dbpass <<MY_QUERY
-    CREATE USER 'aldy3'@'%' identified by 'hive1234';
-    GRANT ALL PRIVILEGES ON *.* TO 'aldy3'@'%';
+    CREATE USER 'user'@'%' identified by 'yourpassword';
+    GRANT ALL PRIVILEGES ON *.* TO 'user'@'%';
     FLUSH PRIVILEGES;
     MY_QUERY
 
