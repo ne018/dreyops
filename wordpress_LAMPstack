@@ -1,0 +1,113 @@
+#provisioning LAMP Stack for Wordpress
+
+sudo apt update
+sudo apt upgrade -y
+sudo apt update
+
+sudo apt install git unzip curl -y
+
+
+sudo apt install php7.2 -y
+sudo apt install php7.2-curl php7.2-gd php7.2-mbstring php7.2-xml php7.2-xmlrpc php7.2-soap php7.2-intl php7.2-zip php7.2-dev php7.2-json php7.2-mysql
+
+
+# edit the file
+sudo nano /etc/apache2/sites-available/000-default.conf 
+
+....
+<VirtualHost *:80>
+        #ServerName www.example.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/wordpress
+
+        <Directory /var/www/wordpress>
+                AllowOverride All
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+
+....
+
+sudo a2enmod rewrite
+sudo systemctl restart apache2
+
+
+# install mysql server w/ mysql client
+sudo apt install mysql-server mysql-client
+
+
+# access your mysql cli
+mysql -u root -p
+
+# create database
+CREATE DATABASE brochaa;
+
+# create user
+CREATE USER 'drey'@'%' identified by 'abc123';
+
+# grant privilege w/ allowing full control for the user
+GRANT ALL PRIVILEGES ON *.* TO 'drey'@'%';
+
+# to perform to grant tables immediately
+FLUSH PRIVILEGES;
+
+
+
+
+# for fresh setup of wordpress
+
+cd /tmp
+curl -O https://wordpress.org/latest.tar.gz
+
+tar xzvf latest.tar.gz
+touch /tmp/wordpress/.htaccess
+cp /tmp/wordpress/wp-config-sample.php /tmp/wordpress/wp-config.php
+mkdir /tmp/wordpress/wp-content/upgrade
+
+sudo cp -a /tmp/wordpress/. /var/www/wordpress
+
+# or if you have existing wp project go to /var/www then clone the proj from ur repo
+git clone http://yourrepository.git
+
+
+# continuation...
+
+sudo chown -R www-data:www-data /var/www/wordpress
+
+sudo find /var/www/wordpress/ -type d -exec chmod 750 {} \;
+sudo find /var/www/wordpress/ -type f -exec chmod 640 {} \;
+
+
+# salt
+curl -s https://api.wordpress.org/secret-key/1.1/salt/
+
+# edit the file via root or sudo
+sudo nano /var/www/wordpress/wp-config.php
+
+# put the return result from curl
+...
+
+define('AUTH_KEY',         'put your unique phrase here');
+define('SECURE_AUTH_KEY',  'put your unique phrase here');
+define('LOGGED_IN_KEY',    'put your unique phrase here');
+define('NONCE_KEY',        'put your unique phrase here');
+define('AUTH_SALT',        'put your unique phrase here');
+define('SECURE_AUTH_SALT', 'put your unique phrase here');
+define('LOGGED_IN_SALT',   'put your unique phrase here');
+define('NONCE_SALT',       'put your unique phrase here');
+
+...
+
+
+
+# check /test your proj via ip of your server
+http://x.x.x.x
+
+
