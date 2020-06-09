@@ -1,4 +1,4 @@
-#provisioning LAMP Stack for Wordpress
+#provisioning LAMP Stack for Wordpress bionic64
 
 sudo apt update
 sudo apt upgrade -y
