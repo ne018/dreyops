@@ -1,0 +1,52 @@
+#create mongodb admin , root , db user
+
+# start the mongo shell
+> mongo
+
+
+# create database root
+> use admin
+
+> db.createUser(
+	{
+		user: "mongo-root",
+		pwd: "superadmin123",
+		roles: [ { role: "root", db: "admin" } ]
+	}
+)
+
+# create the user administrator
+> use admin
+
+> db.createUser(
+	{
+		user: "drey",
+		pwd: "hive1234",
+		roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+	}
+)
+
+# exit then try to login w/ auth
+> mongo --port 27017 -u "drey" --authenticationDatabase "admin" -p
+Enter password:
+
+
+# create database user
+> use testdb
+
+> db.createUser(
+	{
+		user: "binduser",
+		pwd: "hive1234",
+		roles: [ { role: "readWrite", db: "testdb" } ]
+	}
+)
+
+# exit then try to login w/ auth
+> mongo --port 27017 -u "binduser" --authenticationDatabase "testdb" -p
+Enter password:
+
+
+
+# sample usage in php
+mongodb://binduser:hive1234@mongoserver:27017/testdb
