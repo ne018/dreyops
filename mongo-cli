@@ -1,0 +1,16 @@
+
+# remote to other mongo server
+
+mongo --host hostserver:27017 --authenticationDatabase yourdatabase -u drey -p
+
+# remote to your local mongodb
+
+mongo --port 27017 --authenticationDatabase yourdatabase -u drey -p
+
+# mongodump
+
+mongodump --host hostserver:27017 -u "drey" --authenticationDatabase="yourdatabase" -d "yourdatabase"
+
+# mongorestore 
+
+mongorestore --host hostserver:27017 -u "drey" --authenticationDatabase "yourdatabase" --db yourdatabase dump/01-01-1994/
