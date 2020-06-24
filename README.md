@@ -1,2 +1,3 @@
 # provisioning notes
-my autoscripts provisioning setup for devops
+
+notes and autoscripts for devops
