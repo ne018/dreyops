@@ -1,3 +1,5 @@
+# Get this file and rename it to Vagrantfile , Thanks! ~ Takamata
+
 Vagrant.configure("2") do |config|
 
   config.vm.box = "ubuntu/xenial64"
