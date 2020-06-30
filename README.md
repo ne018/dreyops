@@ -1,3 +1,3 @@
 # my provisioning notes
 
-notes and autoscripts for devops
+notes and autoscripts for DevSecOps
