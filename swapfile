@@ -1,0 +1,35 @@
+# SWAP FILE
+
+# check you disk size 
+df -h
+
+# check your existing ram usages
+free -hm
+
+swapon --show
+
+fallocate -l 1G /swapfile
+ls -lh /swapfile
+chmod 600 /swapfile
+
+ls -lh /swapfile
+mkswap /swapfile
+
+swapon /swapfile
+swapon --show
+
+free -hm
+cp /etc/fstab /etc/fstab.bak
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
+cat /proc/sys/vm/swappiness
+sysctl vm.swappiness=10
+
+nano /etc/sysctl.conf
+# add vm.swappiness=10 last line
+
+cat /proc/sys/vm/vfs_cache_pressure
+sysctl vm.vfs_cache_pressure=50
+
+
+free -hm
