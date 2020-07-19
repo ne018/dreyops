@@ -1,0 +1,57 @@
+
+** moodle provisioning note
+
+apt update
+apt upgrade -y
+apt update
+
+apt install git curl unzip -y
+
+apt install apache2 -y 
+apt install php7.2 -y
+apt install mysql-server mysql-client -y
+
+apt install php7.2-mbstring
+apt install php7.2-curl
+
+apt install php-tokenizer
+#openssl - php7.x.x has openssl compiled within the php core and doesn't need an external extension to enable it 
+
+apt install php7.2-xmlrpc
+apt install php7.2-soap
+
+#ctype - in php7.2-common
+apt install php7.2-zip
+apt install php7.2-gd
+
+#simplexml - php7.2-xml
+#xml - php7.2-xml
+
+#pcre - php7.2-dev
+#dom - ?
+
+apt install php7.2-intl
+apt install php7.2-json
+apt install php7.2-mysql
+
+# remove default 000-default then add ur own config file w/ name of your domain
+nano yourdomain.com.conf
+# retain the content from 000-default then edit for your own configuration
+# also remove the softlink file in sites-enabled 000-default then make a soflink for the new one
+sudo ln -s /etc/apache2/sites-available/yourdomain.com.conf /etc/apache2/sites-enabled/yourdomain.com.conf
+
+a2enmod rewrite
+systemctl restart apache2
+
+# if fqdn syntax msg comes up from apache2ctl -t , do this 
+nano /etc/apache2/conf-available/fqdn.conf
+# add ServerName localhost then save
+a2enconf fqdn
+systemctl restart apache2
+
+# cert via letsencrypt
+sudo su
+add-apt-repository ppa:certbot/certbot
+apt install python-certbot-apache
+
+certbot --apache -d yourdomain.com
