@@ -1,5 +1,5 @@
 
-** moodle provisioning note
+** moodle provisioning note (bionic64)
 
 apt update
 apt upgrade -y
