@@ -1,0 +1,192 @@
+# Provisioning Jitsi Meet w/ JWT Auth
+
+# updates & upgrade stuffs
+sudo apt update
+sudo apt upgrade -y
+
+# reboot
+
+# add your hostname in hosts
+127.0.0.1	localhost	meet.domain.com
+
+nano /etc/hosts
+
+# make sure required ports are open
+# 10000:20000 UDP
+# HTTP
+# HTTPS
+# SSH
+
+
+sudo apt-get install lua5.2 -y
+sudo apt-get install liblua5.2 -y
+sudo apt-get install luarocks -y
+
+sudo luarocks install basexx
+
+#ubuntu 18
+sudo apt-get install libssl1.0-dev
+#ubuntu 16
+# sudo apt-get install libssl-dev
+
+sudo luarocks install luacrypto
+	
+
+mkdir src
+cd src
+
+sudo luarocks download lua-cjson
+sudo luarocks unpack lua-cjson-2.1.0.6-1.src.rock
+cd lua-cjson-2.1.0.6-1/lua-cjson
+
+nano lua_cjson.c
+# change line 743 to 
+len = lua_rawlen(l, -1);
+
+nano Makefile
+# change
+LUA_INCLUDE_DIR =   /usr/include/lua5.2
+
+luarocks make
+
+# is above is successful no need to reinstall
+#luarocks install lua-cjson 2.1.0-1
+
+sudo luarocks install luajwtjitsi
+sudo luarocks install net-url
+sudo luarocks install lbase64
+
+cd
+sudo su
+wget https://prosody.im/files/prosody-debian-packages.key -O- | sudo apt-key add -
+echo deb http://packages.prosody.im/debian $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list
+
+apt-get update
+	
+apt-get install prosody
+
+chown prosody:prosody /etc/prosody/certs/*
+chmod 644 /etc/prosody/certs/*
+
+wget -qO - https://download.jitsi.org/jitsi-key.gpg.key | sudo apt-key add -
+sh -c "echo 'deb https://download.jitsi.org stable/' > /etc/apt/sources.list.d/jitsi-stable.list"
+
+apt-get -y update
+apt-get install jitsi-meet
+/usr/share/jitsi-meet/scripts/install-letsencrypt-cert.sh
+
+apt-get install jitsi-meet-tokens
+
+
+# Notes:
+- prepare your domain
+- prepare email for letsencrypt ssl
+- prepare jwt secret key
+- config for jicofo sip...
+	- #provision
+		- apt-get -y install default-jdk ant maven
+		- cd /usr/share/jicofo
+		- git clone https://github.com/jitsi/jicofo.git focus
+		- modifiy unmute code in src/main/java/org/jitsi/jicofo/JitsiMeetConferenceImpl.java  
+		- mvn -U clean compile package -DskipTests -Dassembly.skipAssembly=false
+	# auth for user/pass based
+	org.jitsi.jicofo.auth.URL=XMPP:internal.qoneq.com
+	# auth for jwt
+	org.jitsi.jicofo.auth.URL=EXT_JWT:jitsi-meet.example.com
+	# octo
+	org.jitsi.jicofo.BridgeSelector.BRIDGE_SELECTION_STRATEGY=RegionBasedBridgeSelectionStrategy
+	org.jitsi.jicofo.ALWAYS_TRUST_MODE_ENABLED=true
+	# ssrc
+	org.jitsi.jicofo.MAX_SSRC_PER_USER=1000
+	# jibri
+	org.jitsi.jicofo.jibri.BREWERY=JibriBrewery@internal.auth.internal.qoneq.com
+	org.jitsi.jicofo.jibri.PENDING_TIMEOUT=90
+
+- for lobby feature
+	# make sure muc_lobby_rooms.lua existing in /usr/share/jitsi-meet/prosody-plugins
+	# edit /etc/prosody/conf.avail/yourdomain.com.cfg.lua
+	# add muc_lobby_rooms into modules enabled
+	# add this line of code below c2s_require_encryption
+	lobby_muc = "lobby.jitmeet.example.com"
+	main_muc = "conference.jitmeet.example.com"
+	# then add component for lobby (muc)
+	Component "lobby.jitmeet.example.com" "muc"
+    storage = "memory"
+    restrict_room_creation = true
+    muc_room_locking = false
+    muc_room_default_public_jids = true
+
+
+- config for videobridge
+	# opts 
+	JVB_OPTS="--apis=rest,"
+
+- prepare module muc for size & status
+	- modify muc size 
+- unmute feature modify JitsiMeetConferenceImpl.java
+	- re compile jicofo.jar from git jicofo src
+
+
+- update /etc/prosody/conf.d/domain.cfg.lua
+	- cross_domain_bosh = true;
+	- authentication
+	- guest vhost
+
+
+
+
+
+--- for jibri 
+
+#show list of kernels
+awk -F\' '/menuentry / {print $2}' /boot/grub/grub.cfg
+
+# edit the file for updating kernel
+nano /etc/default/grub
+
+# count by index
+0:1 Ubuntu
+1:0 Ubuntu, with Linux 5.3.0-1019-aws
+1:1 Ubuntu, with Linux 5.3.0-1019-aws (recovery mode)
+1:2 Ubuntu, with Linux 5.3.0-1017-aws
+1:3 Ubuntu, with Linux 5.3.0-1017-aws (recovery mode)
+1:4 Ubuntu, with Linux 4.15.0-1065-aws
+1:5 Ubuntu, with Linux 4.15.0-1065-aws (recovery mode)
+1:6 Ubuntu, with Linux 4.15.0-101-generic
+1:7 Ubuntu, with Linux 4.15.0-101-generic (recovery mode)
+
+
+#apply this changes
+on GRUB DEFAULT "1>6"
+
+#update grub then reboot
+update-grub
+reboot
+
+# for Ffmpeg with X11 capture support
+add-apt-repository ppa:mc3man/bionic-media
+apt-get update
+
+# then follow instruction from the github jibri readme
+
+# clone takamata smartmailer
+	- /home/jibri/mailsmart/takamata.py
+	- /home/jibri/mailsmart/execfinal.sh
+
+# set nginx server for link then setup ur domain
+	- mkdir /srv/recordings
+	- mkdir /var/www/html/recordings
+	- chmod -R 777 /var/www/html/recordings
+	- chown -R www-data:www-data /var/www/html/recordings
+
+# set cron 
+	- 0 0 * * * root find . -mtime +1 -exec rm -rf {};
+
+
+# convert java used
+sudo update-java-alternatives --list
+sudo update-java-alternatives --set java-1.8.0-openjdk-amd64
+
+# for optional selection
+sudo update-alternatives --config java
+
