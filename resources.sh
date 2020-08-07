@@ -14,7 +14,7 @@ fi
 
 cpu=$(cat /proc/loadavg | awk '{print $1}') 
 
-if [[ "$cpu" == 80 ]]; then
+if [[ "$cpu" == 0.80 ]]; then
 	echo -e "Warning, server cpu is running high.\n\nCpu Load: $cpu %"| mail -s "Alert Singapore Staging Server AWS High CPU Usage" -a "from:xero-qoneq" "${receiver[0]}"
 	echo -e "Warning, server cpu is running high.\n\nCpu Load: $cpu %"| mail -s "Alert Singapore Staging Server AWS High CPU Usage" -a "from:xero-qoneq" "${receiver[1]}"
 fi

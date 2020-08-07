@@ -7,49 +7,37 @@ log="logs.txt"
 rm $log
 <<END
 function scanner() {
-    backdoor=(  "posix_mkfifo(" "posix_getlogin(" "posix_ttyname" 
-                "eval(unescape" "eval(base64_decode" "eval(deobfusecate" 
-                "fwrite(" "cmd(" "passthru(" "exec(" "curl(" "system(" 
-                "phpinfo(" "chmod(" "mkdir(" "fopen(" "fclose(" "readfile(" 
-                "edoced_46esab(" "create_function(" "mysql_execute(" 
-                "php_uname(" "php_uname(" "popen(" "pcntl_exec(" 
-                "possix_mkfifo(" "posix_getlogin(" "posix_ttyname(" 
-                "getenv(" "get_current_user(" "proc_get_status(" 
+    backdoor=(  "posix_mkfifo(" "posix_getlogin(" "posix_ttyname"
+                "eval(unescape" "eval(base64_decode" "eval(deobfusecate"
+                "fwrite(" "cmd(" "passthru(" "exec(" "curl(" "system("
+                "phpinfo(" "chmod(" "mkdir(" "fopen(" "fclose(" "readfile("
+                "edoced_46esab(" "create_function(" "mysql_execute("
+                "php_uname(" "php_uname(" "popen(" "pcntl_exec("
+                "possix_mkfifo(" "posix_getlogin(" "posix_ttyname("
+                "getenv(" "get_current_user(" "proc_get_status("
                 "disk_free_space(" "disk_total_space(" "diskfreespace("
-                "getcwd(" "getlastmo(" "getmygid(" "getmypid(" 
-                "getmyuid(" "assert(" "extract(" "parse_str(" 
-                "putenv(" "ini_set(" "pfsockopen(" "fsockopen(" 
-                "apache_child_terminate(" "posix_kill(" 
-                "gethostname(" "posix_setpgid" "posix_setsid" "posix_setuid" 
-                "tmpfile(" "copy(" "md5_file(" "sha1_file(" 
+                "getcwd(" "getlastmo(" "getmygid(" "getmypid("
+                "getmyuid(" "assert(" "extract(" "parse_str("
+                "putenv(" "ini_set(" "pfsockopen(" "fsockopen("
+                "apache_child_terminate(" "posix_kill("
+                "gethostname(" "posix_setpgid" "posix_setsid" "posix_setuid"
+                "tmpfile(" "copy(" "md5_file(" "sha1_file("
                 "show_source(" "str_repeat(" "unserialize(" "pcntl_exec(" )
-        
-    echo -e "\n\n<b style='font-size:12px'>Web shell backdoor server inspection result\n" >> $log    
+
+    echo -e "\n\n<b style='font-size:12px'>Web shell backdoor server inspection result\n" >> $log
     for payload in "${backdoor[@]}"; do
-            find $HOME -name "*.js" 2>/dev/null |\ 
-                xargs grep -rnxe "$payload" 2>/dev/null >> $log
-            find /var/www/html -name "*.js" 2>/dev/null |\ 
-                xargs grep -rnxe "$payload" 2>/dev/null >> $log
-            find /usr/share -name "*.js" 2>/dev/null |\
-                 xargs grep -rnxe "$payload" 2>/dev/null >> $log
-            find /tmp -name "*.js" 2>/dev/null |\
-                 xargs grep -rnxe "$payload" 2>/dev/null >> $log
-            find $HOME -name "*.php" 2>/dev/null |\
-                 xargs grep -rnxe "$payload" 2>/dev/null >> $log
-            find /var/www -name "*.php" 2>/dev/null |\
-                 xargs grep -rnxe "$payload" 2>/dev/null >> $log
-            find /usr/share -name "*.php" 2>/dev/null |\
-                 xargs grep -rnxe "$payload" 2>/dev/null >> $log
-            find /tmp -name "*.php" 2>/dev/null |\
-                 xargs grep -rnxe "$payload" 2>/dev/null >> $log
-            find $HOME -name "*.txt" 2>/dev/null |\
-                 xargs grep -rnxe "$payload" 2>/dev/null >> $log
-            find /var/www -name "*.txt" 2>/dev/null |\
-                 xargs grep -rnxe "$payload" 2>/dev/null >> $log
-            find /usr/share -name "*.txt" 2>/dev/null |\
-                 xargs grep -rnxe "$payload" 2>/dev/null >> $log
-            find /tmp -name "*.txt" 2>/dev/null |\
-                 xargs grep -rnxe "$payload" 2>/dev/null >> $log
+            find $HOME -name "*.js" 2>/dev/null | xargs grep -rnxe "$payload" 2>/dev/null >> $log
+            find /var/www/html -name "*.js" 2>/dev/null | xargs grep -rnxe "$payload" 2>/dev/null >> $log
+            find /usr/share -name "*.js" 2>/dev/null | xargs grep -rnxe "$payload" 2>/dev/null >> $log
+            find /tmp -name "*.js" 2>/dev/null | xargs grep -rnxe "$payload" 2>/dev/null >> $log
+            find $HOME -name "*.php" 2>/dev/null | xargs grep -rnxe "$payload" 2>/dev/null >> $log
+            find /var/www -name "*.php" 2>/dev/null | xargs grep -rnxe "$payload" 2>/dev/null >> $log
+            find /usr/share -name "*.php" 2>/dev/null | xargs grep -rnxe "$payload" 2>/dev/null >> $log
+            find /tmp -name "*.php" 2>/dev/null | xargs grep -rnxe "$payload" 2>/dev/null >> $log
+            find $HOME -name "*.txt" 2>/dev/null | xargs grep -rnxe "$payload" 2>/dev/null >> $log
+            find /var/www -name "*.txt" 2>/dev/null | xargs grep -rnxe "$payload" 2>/dev/null >> $log
+            find /usr/share -name "*.txt" 2>/dev/null | xargs grep -rnxe "$payload" 2>/dev/null >> $log
+            find /tmp -name "*.txt" 2>/dev/null | xargs grep -rnxe "$payload" 2>/dev/null >> $log
     done;
 END
 
@@ -68,7 +56,7 @@ function status() {
 
 }
 
-function requests() { 
+function requests() {
     echo -e "<br>\n\n<b style='font-size:12px'>Most ip visitors in the last 24 hours based in /var/log/access.log file</b>\n</br>" >> $log
     for statuscode in "${responsecode[@]}"; do
         echo -e "\n<b style='font-size:12px'> <li>Most ip request in status code : $statuscode</li></b>\n" >> $log
@@ -130,7 +118,14 @@ function modified() {
             sort -r |\
             grep "${day}" 2>/dev/null >> $log
     done;
-} 
+}
+
+function checkports() {
+  ip=$(curl -s icanhazip.com)
+  if [[ $coreset -le 21 ]]; do
+    echo -e "\n [!] Test data_core!"
+  done;
+}
 
 function main() {
     #scanner
