@@ -38,3 +38,8 @@ sudo apt install python3-pip -y
 # install all packages line by line using cat
 # cat requirements.txt | xargs -n 1 pip3 install
 
+#mysql setup dependencies
+sudo apt-get install python-dev python3-dev
+sudo apt install libmysqlclient-dev
+pip3 install mysqlclient
+
