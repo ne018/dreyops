@@ -28,3 +28,13 @@ sudo apt install python3-pip -y
 
 # testing for development server via vagrant
 # make sure you've open the port you will use
+
+# produce all installed packages from existed project
+# pip3 freeze > requirements
+
+# install all packages from requirements 
+# pip3 install -r requirements.txt
+
+# install all packages line by line using cat
+# cat requirements.txt | xargs -n 1 pip3 install
+
