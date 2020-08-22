@@ -1,57 +1,72 @@
 
 ** moodle provisioning note (bionic64)
 
-apt update
-apt upgrade -y
-apt update
+sudo apt update
+sudo apt upgrade -y
+sudo apt update
 
-apt install git curl unzip -y
+sudo apt install git curl unzip -y
 
-apt install apache2 -y 
-apt install php7.2 -y
-apt install mysql-server mysql-client -y
+# your webserver
+sudo apt install apache2 -y 
 
-apt install php7.2-mbstring
-apt install php7.2-curl
+# script for moodle to work
+sudo apt install php7.2 -y
 
-apt install php-tokenizer
+# your database
+sudo apt install mysql-server mysql-client -y
+
+sudo apt install php7.2-mbstring php7.2-curl php-tokenizer php7.2-xmlrpc php7.2-soap php7.2-zip php7.2-gd php7.2-xml php7.2-dev php7.2-intl php7.2-json php7.2-mysql
+
 #openssl - php7.x.x has openssl compiled within the php core and doesn't need an external extension to enable it 
 
-apt install php7.2-xmlrpc
-apt install php7.2-soap
-
-#ctype - in php7.2-common
-apt install php7.2-zip
-apt install php7.2-gd
-
-#simplexml - php7.2-xml
-#xml - php7.2-xml
-
-#pcre - php7.2-dev
-#dom - ?
-
-apt install php7.2-intl
-apt install php7.2-json
-apt install php7.2-mysql
-
 # remove default 000-default then add ur own config file w/ name of your domain
+# for example yourdomain.com.conf then edit it
 nano yourdomain.com.conf
-# retain the content from 000-default then edit for your own configuration
-# also remove the softlink file in sites-enabled 000-default then make a soflink for the new one
+# retain the content from 000-default then edit for your own configuration or copy the config below
+
+###
+<VirtualHost *:80>
+	ServerName yourdomain.com
+	#ServerAdmin thisis@optional.com
+	DocumentRoot /var/www/moodle-proj
+
+	<Directory /var/www/moodle-proj>
+      AllowOverride All
+	</Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+  
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+###
+
+# also remove the softlink file in sites-enabled 000-default then make a new soflink for your new config
 sudo ln -s /etc/apache2/sites-available/yourdomain.com.conf /etc/apache2/sites-enabled/yourdomain.com.conf
 
-a2enmod rewrite
-systemctl restart apache2
+sudo a2enmod rewrite
+
+# check config before restarting
+sudo apache2ctl -t
+
+sudo systemctl restart apache2
 
 # if fqdn syntax msg comes up from apache2ctl -t , do this 
 nano /etc/apache2/conf-available/fqdn.conf
-# add ServerName localhost then save
-a2enconf fqdn
-systemctl restart apache2
 
-# cert via letsencrypt
+# add ServerName localhost then save
+sudo a2enconf fqdn
+sudo systemctl restart apache2
+
+# cert via letsencrypt ssl on your domain
+
+# go to root
 sudo su
+
 add-apt-repository ppa:certbot/certbot
 apt install python-certbot-apache
 
 certbot --apache -d yourdomain.com
+
