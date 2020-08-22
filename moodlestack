@@ -22,7 +22,7 @@ sudo apt install php7.2-mbstring php7.2-curl php-tokenizer php7.2-xmlrpc php7.2-
 
 # remove default 000-default then add ur own config file w/ name of your domain
 # for example yourdomain.com.conf then edit it
-nano yourdomain.com.conf
+nano /etc/apache2/sites-available/yourdomain.com.conf
 # retain the content from 000-default then edit for your own configuration or copy the config below
 
 ###
