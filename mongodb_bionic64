@@ -21,3 +21,20 @@ sudo systemctl restart mongod
 # checking version
 mongo --version
 
+# limits
+# /etc/security/limits.conf
+
+mongodb          soft    memlock         unlimited
+mongodb          hard    memlock         unlimited
+mongodb          soft    nofile          64000
+mongodb          hard    nofile          64000
+mongodb          soft    nproc           64000
+mongodb          hard    nproc           64000
+
+mongodb hard fsize unlimited
+mongodb soft fsize unlimited
+mongodb hard as unlimited
+mongodb soft as unlimited
+
+# /etc/pam.d/common-session
+session required        pam_limits.so
