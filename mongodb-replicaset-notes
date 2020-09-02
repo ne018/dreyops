@@ -1,0 +1,51 @@
+Step 0:
+# Install setup w/ appropriate admin users and bind user
+
+use admin;
+
+db.createUser({ user: "rootUser", pwd: "rootPass", roles: [{ role: "root", db: "admin" }] });
+db.createUser({ user: "admin", pwd: "adminPass", roles: [{ role: "userAdminAnyDatabase", db: "admin" }] });
+
+use otherDb;
+db.createUser({ user: "binduser", pwd: "bindpass", roles: [{ role: "readWrite", db: "otherDb" }] });
+
+
+Step 1:
+# Start each member of the replica set with the appropriate options w/ hostname
+
+1.2.3.4	mongo01-replica
+1.2.3.4	mongo02-replica
+1.2.3.4	mongo03-replica
+
+# test if can ping each other
+
+mongo --host mongo01-replica:27017 -u admin --authenticationDatabase admin
+mongo --host mongo02-replica:27017 -u admin --authenticationDatabase admin
+mongo --host mongo03-replica:27017 -u admin --authenticationDatabase admin
+
+# modify /etc/mongod.conf for your replication and bindIp for service allowment
+
+
+Step 2:
+# Initiate the replica set
+
+rs.initiate( {
+   _id : "rs0",
+   members: [
+      { _id: 0, host: "mongo01-replica:27017" },
+      { _id: 1, host: "mongo02-replica:27017" },
+      { _id: 2, host: "mongo03-replica:27017" }
+   ]
+});
+
+
+Step 3:
+# view replica set config
+
+rs.conf()
+
+
+Step 4:
+# ensure that the replica set has a primary.
+
+rs.status()
