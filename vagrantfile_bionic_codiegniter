@@ -1,0 +1,11 @@
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.network "forwarded_port", guest: 80, host: 9000
+  config.vm.network "public_network"
+  config.vm.synced_folder "", "/var/www/html"
+  
+  config.vm.provision "shell", path: "https://raw.githubusercontent.com/ne018/dreyops/master/codeigniter_lamp.sh"
+
+end
