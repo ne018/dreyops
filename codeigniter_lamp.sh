@@ -1,3 +1,6 @@
+#!/bin/sh
+# author: t4k4mata
+# deployed 09032020-1306
 
 echo "preparing..."
 sudo apt update -y
