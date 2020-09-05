@@ -39,6 +39,10 @@ Allow from all
 Order Deny,Allow
 Deny from all
 </FilesMatch>
+
+<Files *.php>
+Deny from All
+</Files>
  
 # Only allow GET and POST HTTP methods
 <LimitExcept GET POST>
