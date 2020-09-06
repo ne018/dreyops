@@ -41,4 +41,3 @@ CREATE USER 'user'@'%' identified by 'password';
 GRANT ALL PRIVILEGES ON *.* TO 'user'@'%';
 FLUSH PRIVILEGES;
 MY_QUERY
-
