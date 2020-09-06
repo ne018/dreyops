@@ -1,7 +1,11 @@
 #date: 09072020_0018
 #author: takamata
 
+
+
 # updating os..
+sudo apt update -y
+
 sudo apt upgrade -y
 
 # install webserver
