@@ -1,0 +1,44 @@
+# nfs server setup
+# author: takamata
+
+sudo apt update
+sudo apt upgrade -y
+
+sudo apt install nfs-kernel-server -y
+
+sudo apt update -y
+
+sudo mkdir -p /mnt/sharedfolder
+
+# lets remove restrictive permissions so anyone can access to this path
+sudo chown  :nogroup /mnt/sharedfolder/
+sudo chmod 777 /mnt/sharedfolder/
+
+sudo nano /etc/exports
+
+# just do add dir path to be shared
+# then add the ip with action permission in this nfs acl config file
+
+# sample config
+# /mnt/sharedfolder       clientIP/cidr-range(rw,sync,no_subtree_check)
+
+# now lets export the shared folder
+sudo exportfs -a
+
+# lets restart the service
+sudo systemctl restart nfs-kernel-server.service 
+
+
+# now lets configure your nfs client
+
+sudo apt update -y
+sudo apt install nfs-common -y
+
+# lets make syncfolder path from the nfs server sharedfolder
+sudo mkdir -p /mnt/sharedfolder_client
+
+# then mount the server shared folder
+sudo mount 1.2.3.4:/mnt/sharedfolder /mnt/sharedfolder_client
+
+# now test your shared nfs folder between client and server nfs
+

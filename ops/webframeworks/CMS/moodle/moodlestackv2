@@ -1,0 +1,41 @@
+#date: 09082020_1824
+#author: takamata
+
+
+# moodlestack v2
+
+sudo apt update -y
+sudo apt upgrade -y
+
+sudo apt install git unzip curl -y
+
+sudo apt install apache2 -y
+sudo apt install mysql-server mysql-client -y
+
+sudo apt install php7.2 -y
+
+sudo apt install graphviz aspell ghostscript clamav php7.2-pspell php7.2-curl php7.2-gd php7.2-intl php7.2-mysql php7.2-xml php7.2-xmlrpc php7.2-ldap php7.2-zip php7.2-soap php7.2-mbstring 
+
+
+sudo git clone git://git.moodle.org/moodle.git
+cd moodle/
+
+sudo git branch -a
+sudo git branch --track MOODLE_39_STABLE origin/MOODLE_39_STABLE
+sudo git checkout MOODLE_39_STABLE
+
+cd ..
+
+sudo cp -R moodle /var/www/html/
+sudo chmod -R 0755 /var/www/html/moodle
+sudo mkdir -p /var/www/html/moodledata
+
+# replace config in webserver
+sudo su
+cd /etc/apache2/sites-available
+rm 000-default.conf
+wget https://raw.githubusercontent.com/ne018/dreyops/master/ops/apache2/sites-available/moodle-config.conf -O 000-default.conf
+a2enmod rewrite
+
+# restart webserver
+service apache2 restart
