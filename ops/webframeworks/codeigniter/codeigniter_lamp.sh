@@ -9,6 +9,9 @@ echo "let's upgrade all our resources..."
 sudo apt upgrade -y
 sudo apt update -y
 
+echo "installing webserver..."
+sudo apt install apache2 -y
+
 echo "installing PHP7..."
 sudo apt install php7.2 -y
 
