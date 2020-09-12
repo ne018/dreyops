@@ -1,0 +1,58 @@
+# setup redis bionci64
+# port used 6379
+
+sudo apt update
+sudo apt install redis-server
+
+# config
+sudo nano /etc/redis/redis.conf
+
+
+sudo systemctl restart redis.service
+
+sudo systemctl status redis
+
+
+# cli for testing
+redis-cli
+
+# first time testing
+127.0.0.1:6379> set test "It's working"
+127.0.0.1:6379> get test
+"It's working"
+127.0.0.1:6379> quit
+
+# sample generation of strong pass
+
+openssl rand 60 | openssl base64 -A
+agA5I0Ju3jywDNWG1vNMbFgFz5jTV1WQ+D3WzTdcaY4WTHtxkYlpmshJR0+ks07DQII1at0lTuJUHq68
+
+# testing with pass
+127.0.0.1:6379> set key1 10
+(error) NOAUTH Authentication required.
+127.0.0.1:6379> auth agA5I0Ju3jywDNWG1vNMbFgFz5jTV1WQ+D3WzTdcaY4WTHtxkYlpmshJR0+ks07DQII1at0lTuJUHq68
+OK
+127.0.0.1:6379> set key1 10
+OK
+127.0.0.1:6379> get key1
+"10"
+127.0.0.1:6379> quit
+
+
+# for safety for your server from hacking or tweak via redis commands
+# rename those dangerous commands or kill it
+# open config then rename it in ## SECURITY ## section
+
+# considered dangerous:  FLUSHDB, FLUSHALL, KEYS, PEXPIRE, DEL, CONFIG, SHUTDOWN, BGREWRITEAOF, BGSAVE, SAVE, SPOP, SREM, RENAME, and DEBUG. 
+
+rename-command FLUSHDB ""
+rename-command FLUSHALL ""
+rename-command DEBUG ""
+rename-command SHUTDOWN SHUTDOWN_MENOT
+rename-command CONFIG ASC12_CONFIG
+
+# restart to take affect
+sudo systemctl restart redis.service
+
+
+
