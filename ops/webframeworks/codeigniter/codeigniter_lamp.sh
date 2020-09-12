@@ -9,6 +9,9 @@ echo "let's upgrade all our resources..."
 sudo apt upgrade -y
 sudo apt update -y
 
+echo "installing webserver..."
+sudo apt install apache2 -y
+
 echo "installing PHP7..."
 sudo apt install php7.2 -y
 
@@ -43,7 +46,7 @@ echo 'setup apache2 config for codeigniter..'
 sudo su
 cd /etc/apache2/sites-available
 rm 000-default.conf
-wget https://raw.githubusercontent.com/ne018/dreyops/master/codeigniter-000-default.conf -O 000-default.conf
+wget https://raw.githubusercontent.com/ne018/dreyops/master/ops/webframeworks/codeigniter/codeigniter-000-default.conf -O 000-default.conf
 a2enmod rewrite
 
 # restart webserver
