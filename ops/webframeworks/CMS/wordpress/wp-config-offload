@@ -1,0 +1,2 @@
+define( 'AS3CF_AWS_ACCESS_KEY_ID', '********************' );
+define( 'AS3CF_AWS_SECRET_ACCESS_KEY', '**************************************' );
