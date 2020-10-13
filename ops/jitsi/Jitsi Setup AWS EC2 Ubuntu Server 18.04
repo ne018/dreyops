@@ -1,0 +1,136 @@
+Jitsi Setup AWS EC2 Ubuntu Server 18.04
+
+# Prepare network environment
+sudo -i
+
+sudo hostnamectl set-hostname yourdomain.com
+sudo apt update
+sudo apt install apt-transport-https
+
+# edit /etc/hosts
+127.0.0.1	localhost	yourdomain.com
+
+# restart VM
+sudo reboot
+
+
+# install libssl1.0-dev for bionic
+sudo nano /etc/apt/sources.list
+
+# append this to the file
+deb http://security.ubuntu.com/ubuntu bionic-security main
+
+# execute
+sudo apt update && apt-cache policy libssl1.0-dev
+
+
+## we need to install the Jitsi base components and latest Prosody version.
+##
+## gcc (c++ compiler to compile luarocks)
+## unzip
+## lua.5.2 (lua programming language)
+## liblua5.2 (lua base libraries)
+## luarocks (the main repository of lua modules)
+## basexx (lua library which provides base2(bitfield), base16(hex), base32(crockford/rfc), base64(rfc/url), base85(z85) decoding and encoding).
+## libssl1.0-dev (part of the openssl proj implementation of SSL and TLS)
+## luacrypto (lua frontend to the openssl cryptographic library)
+## lua-cjson (json encoding/parsing)
+## luajwtjitsi (json web tokens module for lua)
+## net-url (for bosh api)
+## prosody (latest stable version)
+
+sudo su &&
+cd &&
+apt update -y &&
+apt install gcc -y &&
+apt install git unzip curl -y &&
+apt install lua5.2 -y &&
+apt install liblua5.2 -y &&
+apt install luarocks -y &&
+luarocks install basexx &&
+apt install libssl1.0-dev -y &&
+luarocks install luacrypto &&
+luarocks install net-url &&
+
+mkdir src &&
+cd src &&
+
+luarocks download lua-cjson &&
+luarocks unpack lua-cjson-2.1.0.6-1.src.rock &&
+cd lua-cjson-2.1.0.6-1/lua-cjson &&
+sed -i 's/lua_objlen/lua_rawlen/g' lua_cjson.c &&
+sed -i 's|$(PREFIX)/include|/usr/include/lua5.2|g' Makefile &&
+luarocks make &&
+luarocks install luajwtjitsi &&
+
+cd &&
+wget https://prosody.im/files/prosody-debian-packages.key -O- | sudo apt-key add - &&
+echo deb http://packages.prosody.im/debian $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list &&
+
+apt-get update -y &&
+apt-get upgrade -y &&
+
+apt-get install prosody -y &&
+
+chown prosody:prosody /etc/prosody/certs/*
+chmod 644 /etc/prosody/certs/*
+
+# after reboot switch to root as always:
+sudo su
+
+
+## Install the rest of the components;
+## Notes for the installation of this part:
+## - Hostname will be prompted. Enter FQDN which is same as hostname of the VM.
+## - As a second prompted question, generate a new certificate instead of using your existing certificate.
+## Enter application ID; YOUR_APP_ID
+## Enter application secret as; YOUR_SECRET
+
+
+cd
+cp /etc/prosody/certs/localhost.key /etc/ssl
+apt-get install nginx -y
+
+wget -qO - https://download.jitsi.org/jitsi-key.gpg.key | sudo apt-key add -
+sh -c "echo 'deb https://download.jitsi.org stable/' > /etc/apt/sources.list.d/jitsi-stable.list"
+
+apt-get -y update
+apt-get install jitsi-meet -y
+apt-get install jitsi-meet-tokens -y
+
+/usr/share/jitsi-meet/scripts/install-letsencrypt-cert.sh
+# By now we have installed all of the required components.
+
+
+
+
+#Advanced config
+/etc/systemd/system.conf
+
+DefaultLimitNOFILE=65000
+DefaultLimitNPROC=65000
+DefaultTasksMax=65000
+
+
+# to check values just run:
+systemctl show --property DefaultLimitNPROC
+systemctl show --property DefaultLimitNOFILE
+systemctl show --property DefaultTasksMax
+
+
+# To reload the systemd changes on a running system execute
+sudo systemctl daemon-reload
+
+# and
+sudo systemctl restart jitsi-videobridge2
+
+
+# check:
+# you should see Tasks: XX (limit: 65000)
+sudo systemctl status jitsi-videobridge2
+
+
+cat /proc/`cat /var/run/jitsi-videobridge/jitsi-videobridge.pid`/limits
+
+Max processes             65000                65000                processes
+Max open files            65000                65000                files
