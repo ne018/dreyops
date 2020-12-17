@@ -39,38 +39,38 @@ sudo apt update && apt-cache policy libssl1.0-dev
 ## net-url (for bosh api)
 ## prosody (latest stable version)
 
-sudo su &&
-cd &&
-apt update -y &&
-apt install gcc -y &&
-apt install git unzip curl -y &&
-apt install lua5.2 -y &&
-apt install liblua5.2 -y &&
-apt install luarocks -y &&
-luarocks install basexx &&
-apt install libssl1.0-dev -y &&
-luarocks install luacrypto &&
-luarocks install net-url &&
+sudo su
+cd
+apt update -y
+apt install gcc -y
+apt install git unzip curl -y
+apt install lua5.2 -y
+apt install liblua5.2 -y
+apt install luarocks -y
+luarocks install basexx
+apt install libssl1.0-dev -y
+luarocks install luacrypto
+luarocks install net-url
 
-mkdir src &&
-cd src &&
+mkdir src
+cd src
 
-luarocks download lua-cjson &&
-luarocks unpack lua-cjson-2.1.0.6-1.src.rock &&
-cd lua-cjson-2.1.0.6-1/lua-cjson &&
-sed -i 's/lua_objlen/lua_rawlen/g' lua_cjson.c &&
-sed -i 's|$(PREFIX)/include|/usr/include/lua5.2|g' Makefile &&
-luarocks make &&
-luarocks install luajwtjitsi &&
+luarocks download lua-cjson
+luarocks unpack lua-cjson-2.1.0.6-1.src.rock
+cd lua-cjson-2.1.0.6-1/lua-cjson
+sed -i 's/lua_objlen/lua_rawlen/g' lua_cjson.c
+sed -i 's|$(PREFIX)/include|/usr/include/lua5.2|g' Makefile
+luarocks make
+luarocks install luajwtjitsi
 
-cd &&
-wget https://prosody.im/files/prosody-debian-packages.key -O- | sudo apt-key add - &&
-echo deb http://packages.prosody.im/debian $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list &&
+cd
+wget https://prosody.im/files/prosody-debian-packages.key -O- | sudo apt-key add -
+echo deb http://packages.prosody.im/debian $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list
 
-apt-get update -y &&
-apt-get upgrade -y &&
+apt-get update -y
+apt-get upgrade -y
 
-apt-get install prosody -y &&
+apt-get install prosody -y
 
 chown prosody:prosody /etc/prosody/certs/*
 chmod 644 /etc/prosody/certs/*
@@ -95,8 +95,12 @@ wget -qO - https://download.jitsi.org/jitsi-key.gpg.key | sudo apt-key add -
 sh -c "echo 'deb https://download.jitsi.org stable/' > /etc/apt/sources.list.d/jitsi-stable.list"
 
 apt-get -y update
+
+-- stop here for other versions.
+
 apt-get install jitsi-meet -y
 apt-get install jitsi-meet-tokens -y
+
 
 /usr/share/jitsi-meet/scripts/install-letsencrypt-cert.sh
 # By now we have installed all of the required components.
