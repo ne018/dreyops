@@ -1,0 +1,70 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Box / OS
+VAGRANT_BOX = 'ubuntu/bionic64'
+
+# Name of your vagrant
+VM_NAME = 'dockervagrant'
+
+# Host folder to sync
+HOST_PATH = '/Users/drey/tsukuyomi/dockervagrant/workspace'
+
+# Where to sync to on Guest - 'vagrant' is the default user name
+GUEST_PATH = '/opt/proyekto'
+
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+
+  # Vagrant box
+  config.vm.box = VAGRANT_BOX
+
+  # Actual machine name
+  config.vm.hostname = VM_NAME
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = VM_NAME
+    vb.memory = "4096"
+    vb.cpus = 2
+  end
+
+  # config.vm.network "forwarded_port", guest: 80, host: 80
+  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+  # config.vm.network "private_network", ip: "192.168.33.10"
+  # config.vm.network "public_network"
+
+  config.vm.synced_folder HOST_PATH, GUEST_PATH
+
+  config.vm.synced_folder '.', '/home/vagrant', disabled: true
+
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update -y
+    apt-get install -y git
+    apt-get install -y apt-transport-https
+    apt-get install -y ca-certificates
+    apt-get install -y build-essential
+    apt-get install -y curl
+    apt-get install -y gnupg-agent
+    apt-get install -y software-properties-common
+
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    apt-key fingerprint 0EBFCD88
+
+    add-apt-repository \
+       "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+       $(lsb_release -cs) \
+       stable"
+
+    apt-get update -y
+    apt-get install -y docker-ce docker-ce-cli containerd.io
+
+    curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+    ln -s /usr/local/bin/docker-composer /usr/bin/docker-compose
+  SHELL
+
+end
