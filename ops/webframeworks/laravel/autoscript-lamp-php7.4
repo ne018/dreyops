@@ -47,7 +47,7 @@ sudo apt install mysql-server mysql-client -y
 
 
 # mysql 
-mysql -u root -p <<MY_QUERY
+sudo mysql -u root -p <<MY_QUERY
 CREATE USER 'hivedev'@'%' identified by 'hive1234';
 GRANT ALL PRIVILEGES ON *.* TO 'hivedev'@'%';
 FLUSH PRIVILEGES;
