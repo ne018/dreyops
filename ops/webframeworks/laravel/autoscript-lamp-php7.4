@@ -70,10 +70,10 @@ sudo rm composer-setup.php
 sudo su
 
 cd /var/www/html
-git clone https://github.com/laravel/laravel.git
-chmod -R 775 /var/www/html/laravel
-chown -R www-data:www-data /var/www/html/laravel
-chmod -R 777 /var/www/html/laravel/storage
+sudo git clone https://github.com/laravel/laravel.git
+sudo chmod -R 775 /var/www/html/laravel
+sudo chown -R www-data:www-data /var/www/html/laravel
+sudo chmod -R 777 /var/www/html/laravel/storage
 
 
 cd /etc/apache2/sites-available
