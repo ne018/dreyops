@@ -1,0 +1,134 @@
+
+# LEMP Stack Laravel
+
+# update and upgrade your distro
+sudo apt update
+sudo apt upgrade
+
+# install nginx server
+sudo apt install nginx -y
+
+# some necessary tools for your deployment
+sudo apt install git unzip curl -y
+
+# install php
+sudo apt install php7.2 -y
+
+# uninstall apache2
+sudo apt purge apache2 -y
+
+# clean some of packages
+sudo apt autoremove -y
+
+# install some php modules
+sudo apt install php7.2-fpm php7.2-mysql php7.2-curl php7.2-json php7.2-mbstring php7.2-xml php7.2-bcmath php7.2-zip php7.2-gd -y
+
+# dependencies for mcrypt
+sudo apt install php7.2-dev libmcrypt-dev php-pear -y
+
+# pecl installation for mcrypt module
+sudo pecl channel-update pecl.php.net
+sudo pecl install mcrypt-1.0.1
+
+# update php.ini in /etc/php/<php version>/fpm/php.ini
+extension=mcrypt.so
+
+# update also fix_pathinfo , set to 0 for nginx webserver /etc/php/<php version>/fpm/php.ini
+cgi.fix_pathinfo=0;
+
+# restart your fpm to take affect the settings
+sudo service php7.2-fpm restart
+
+
+# mysql server / client
+sudo apt install mysql-server mysql-client -y
+
+# create user for remote
+create user 'accessdev'@'%' identified by 'dev1234';
+
+# grant privileges
+grant all privileges on *.* to 'accessdev'@'%';
+
+# immediate apply
+flush privileges
+
+
+# update allowed ip for your mysql service i.e. bind-address 0.0.0.0
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+
+# restart to take affect
+sudo service mysql restart
+
+
+# downloading & installing composer for php
+cd ~
+curl -sS https://getcomposer.org/installer -o composer-setup.php
+
+sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
+
+# update your web config in your web server sites-available /etc/
+
+# sample config format for php
+server {
+    listen 80;
+    server_name example.local;
+    root /home/<your_username>/example/public;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.html index.htm index.php;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+
+# create your own config i.e. websample.local.conf
+sudo nano /etc/nginx/sites-available/websample.local.conf
+
+# create a symbolic link for your web config
+sudo ln -s /etc/nginx/sites-available/websample.local.conf /etc/nginx/sites-enabled/websample.local.conf
+
+# web server config test
+sudo nginx -t
+
+# once success you may now restart web server service.
+sudo service nginx restart
+
+
+# choose type of deployment u want
+
+# deploy laravel via git
+git clone https://github.com/laravel/laravel.git
+
+# deploy laravel via composer
+composer create-project --prefer-dist laravel/laravel project
+
+# install some dependencies for the project
+composer install
+
+# proper permissions for laravel files
+chown -R www-data:www-data /var/www/html/laravel
+chmod -R 775 /var/www/html/laravel
+chmod -R 777 /var/www/html/laravel/storage
