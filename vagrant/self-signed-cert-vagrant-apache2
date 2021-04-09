@@ -1,0 +1,63 @@
+#vagrant-macos setup
+
+#create a directory inside your sync folder in vagrant
+mkdir certs
+cd certs
+mkdir CA
+
+
+#Generate a private root key
+openssl genrsa -aes256 -out CA/rootCA.key 4096
+
+#Generate a private root certificate
+openssl req -x509 -new -nodes -key CA/rootCA.key -sha256 -days 3650 -out CA/rootCA.crt
+
+#Generate a domain certificate signing request
+openssl req \
+    -new \
+    -nodes \
+    -keyout dreytest.local.key \
+    -out domain.csr \
+    -days 3650 \
+    -subj "/C=CA/L=ON/O=TD/CN=dreytest.local"
+
+
+#Generate an SSL certificate
+
+openssl x509 \
+    -req \
+    -days 3650 \
+    -sha256 \
+    -in domain.csr \
+    -CA CA/rootCA.crt \
+    -CAkey CA/rootCA.key \
+    -CAcreateserial \
+    -out dreytest.local.crt \
+    -extensions v3_ca -extfile <(
+cat <<-EOF
+[ v3_ca ]
+subjectAltName = DNS:dreytest.local
+EOF
+)
+
+
+
+# add this to your ssl config in webserver
+# apache
+
+SSLEngine on
+SSLCertificateFile /your/sync/path/dreytest.local.crt
+SSLCertificateKeyFile /your/sync/path/dreytest.local.key
+
+# enable changes in apache2
+sudo a2enmod ssl
+sudo a2enmod headers
+
+sudo a2ensite default-ssl
+sudo apache2ctl -t
+
+sudo systemctl restart apache2
+
+# allow the cert in keychain access
+# double tap on dreytest.local
+
