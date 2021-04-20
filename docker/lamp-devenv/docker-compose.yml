@@ -22,10 +22,10 @@ services:
      container_name: wpdb
      restart: 'always'
      environment:
-         MYSQL_ROOT_PASSWORD: strongpass1234
-         MYSQL_DATABASE: app_db
-         MYSQL_USER: devuser
-         MYSQL_PASSWORD: pass1234
+         MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+         MYSQL_DATABASE: ${MYSQL_DATABASE}
+         MYSQL_USER: ${MYSQL_USER}
+         MYSQL_PASSWORD: ${MYSQL_PASSWORD}
      ports:
         - "0.0.0.0:${HOST_MACHINE_MYSQL_PORT}:3306"
      volumes:
