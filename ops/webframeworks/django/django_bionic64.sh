@@ -1,3 +1,4 @@
+
 sudo apt update;sudo apt upgrade -y
 
 sudo apt install git curl unzip -y
@@ -44,3 +45,43 @@ sudo apt install libmysqlclient-dev -y
 pip3 install mysqlclient
 
 pip3 django gunicorn psycopg2-binary
+
+
+# running in background
+sudo apt install supervisor
+
+# test it
+gunicorn --bind 0.0.0.0:9000 project.wsgi
+
+# set your supervisor for gunicorn
+sudo nano /etc/supervisor/conf.d/gunicorn.conf
+
+# here is the content
+[program:project]
+directory=/opt/djfiles/project
+command=/usr/local/bin/gunicorn project.wsgi:application --workers 3 --bind 127.0.0.1:9000 --log-level info;
+stdout_logfile = /opt/djfiles/project/logs/gunicorn/access.log
+stderr_logfile = /opt/djfiles/project/logs/gunicorn/error.log
+stdout_logfile_maxbytes=5000000
+stderr_logfile_maxbytes=5000000
+stdout_logfile_backups=100000
+stderr_logfile_backups=100000
+autostart=true
+autorestart=true
+startsecs=10
+stopasgroup=true
+priority=99
+
+
+# re read the config
+sudo supervisorctl reread
+
+# update
+sudo supervisorctl update
+
+# start the project
+sudo supervisorctl start project
+
+# test it!
+
+
