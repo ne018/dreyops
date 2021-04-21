@@ -1,19 +1,18 @@
-# python3 ubuntu bionic64
+sudo apt update;sudo apt upgrade -y
 
-sudo apt update
-sudo apt upgrade -y
-sudo apt update
-
-sudo apt install git unzip curl -y
+sudo apt install git curl unzip -y
 
 sudo apt install software-properties-common
 
 sudo add-apt-repository ppa:deadsnakes/ppa
 
 sudo apt update -y
-
 sudo apt install python3.8 -y
-sudo apt install python3-pip -y
+
+sudo apt install python3-pip python3-dev libpq-dev nginx -y
+
+# upgrade pip
+sudo -H pip3  install --upgrade pip
 
 # python3 -V
 
@@ -39,8 +38,9 @@ sudo apt install python3-pip -y
 # install all packages line by line using cat
 # cat requirements.txt | xargs -n 1 pip3 install
 
+
 #mysql setup dependencies
-sudo apt-get install python-dev python3-dev -y
 sudo apt install libmysqlclient-dev -y
 pip3 install mysqlclient
 
+pip3 django gunicorn psycopg2-binary
