@@ -1,0 +1,32 @@
+
+
+sudo apt-get update; sudo apt upgrade -y
+
+sudo apt install nginx -y
+
+sudo apt install -y python3-django
+django-admin --version
+# version 3.1.4
+
+
+sudo apt install python3-pip -y
+pip3 -V
+
+sudo pip3 install Django==3.2.4
+# upgrade to LTS 3.2.4
+
+# setup virtual environment
+sudo apt install python3-venv
+
+mkdir your_proj && cd your_proj
+python3 -m venv django_env
+
+source django_env/bin/activate
+
+deactivate
+# for deactivate venv
+
+
+sudo apt install libmysqlclient-dev -y
+pip3 install mysqlclient
+
