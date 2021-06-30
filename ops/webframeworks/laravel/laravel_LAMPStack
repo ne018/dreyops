@@ -31,6 +31,12 @@ grant all privileges on *.* to 'hivedevs'@'%';
 # immediate apply
 flush privileges
 
+# enable if composer failed to download
+sudo nano /etc/gai.conf
+
+#insert this code
+precedence ::ffff:0:0/96  100
+
 # downloading & installing composer for php
 cd ~
 curl -sS https://getcomposer.org/installer -o composer-setup.php
