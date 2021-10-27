@@ -41,33 +41,33 @@ echo "Installing php7.4..."
 
 
 # uninstall apache2
-sudo apt purge apache2 -y
+	sudo apt purge apache2 -y
 
 # clean some of packages
-sudo apt autoremove -y
+	sudo apt autoremove -y
 
 # install some php modules
-sudo apt install php7.4-fpm php7.4-mysql php7.4-curl php7.4-json php7.4-mbstring php7.4-xml php7.4-bcmath php7.4-zip php7.4-gd -y
+	sudo apt install php7.4-fpm php7.4-mysql php7.4-curl php7.4-json php7.4-mbstring php7.4-xml php7.4-bcmath php7.4-zip php7.4-gd -y
 
 # dependencies for mcrypt
-sudo apt install php7.4-dev libmcrypt-dev php-pear -y
+	sudo apt install php7.4-dev libmcrypt-dev php-pear -y
 
 # mcrypt
 
 # dev tools
-sudo apt install -y build-essential
+	sudo apt install -y build-essential
 
 # update channels
-sudo pecl channel-update pecl.php.net
-sudo pecl update-channels
+	sudo pecl channel-update pecl.php.net
+	sudo pecl update-channels
 
 # install mcrypt using pecl command
-sudo printf "\n" | sudo pecl install mcrypt
+	sudo printf "\n" | sudo pecl install mcrypt
 
-sudo sed '1 a extension=mcrypt.so;' /etc/php/7.4/cli/php.ini
+	sudo sed '1 a extension=mcrypt.so;' /etc/php/7.4/cli/php.ini
 
 # restart web server to take affect alongside php
-sudo systemctl restart nginx
+	sudo systemctl restart nginx
 
 echo "restart server"
 	sleep 1s
@@ -77,15 +77,10 @@ echo "Installing Database Server.."
 	sudo apt install mariadb-server mariadb-client -y
 	sudo systemctl status mysql --no-pager
 	sudo systemctl enable mysql
-cd /etc/nginx/sites-available
-wget https://raw.githubusercontent.com/ne018/dreyops/master/ops/webframeworks/laravel/laravel_nginxconfig -O laravel.conf
-sudo rm default
-cd /etc/nginx/sites-enabled
-sudo rm default
-sudo ln -s /etc/nginx/sites-available/laravel.conf /etc/nginx/sites-enabled/laravel.conf
 
 
-sudo systemctl restart nginx	sleep 1s
+sudo systemctl restart nginx
+	sleep 1s
 	clear
 
 
@@ -158,9 +153,9 @@ echo "Setting up web server configuration"
 	wget https://raw.githubusercontent.com/ne018/dreyops/master/ops/webframeworks/laravel/laravel_nginxconfig -O laravel.conf
 
 echo "Removing default file"
-#	sudo rm default
+	sudo rm default
 	cd /etc/nginx/sites-enabled
-#	sudo rm default
+	sudo rm default
 
 echo "Make a symbolic link for your laravel"
   sudo ln -s /etc/nginx/sites-available/laravel.conf /etc/nginx/sites-enabled/laravel.conf
