@@ -87,7 +87,7 @@ sudo systemctl restart nginx
 echo "Installing MySQL Security script... (sixpathdevops: I suggesting you to setup your own root password for this RDBMS)"
 	sudo mysql_secure_installation
 	sleep 2s
-
+echo #
 echo "(sixpathofdevops: Now try to enter your new root password"
 #sudo apt-get install -y debconf-utils
 #sudo mysql -u root -p -e "create user 'hivedev'@'%' identified by 'hive1234'"; -y
@@ -132,7 +132,7 @@ echo "Activating environment file..."
 # install composer
 echo "Installing packages via composer..."
 	sleep 1s
-	sudo composer install
+	sudo composer install --no-interaction
 
 # change permissions
 echo "Set user and group permissions for the project..."
