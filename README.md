@@ -3,3 +3,6 @@
 # my devops notes
 
 provisioning, autoscripts, bashscripts, notes, logs
+
+
+(c) 2021 : sixpathofdevops
